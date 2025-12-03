@@ -8,6 +8,7 @@ import {
 } from "react-leaflet";
 import { Link } from "react-router-dom";
 import L from "leaflet";
+import { API_BASE_URL } from "../lib/api";
 import "leaflet/dist/leaflet.css";
 import "./MapView.css";
 
@@ -127,8 +128,8 @@ const MapView: React.FC = () => {
   const fetchData = async () => {
     try {
       const [segRes, incRes] = await Promise.all([
-        fetch("http://localhost:8000/api/segments"),
-        fetch("http://localhost:8000/api/incidents"),
+        fetch(`${API_BASE_URL}/api/segments`),
+        fetch(`${API_BASE_URL}/api/incidents`),
       ]);
       const segData = await segRes.json();
       const incData = await incRes.json();

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_BASE_URL } from "../lib/api";
 import "./ScenarioButtons.css";
 
 interface ScenarioButtonsProps {
@@ -20,7 +21,7 @@ const ScenarioButtons: React.FC<ScenarioButtonsProps> = ({
 
     try {
       const res = await fetch(
-        `http://localhost:8000/api/system/scenario/${endpoint}`,
+        `${API_BASE_URL}/api/system/scenario/${endpoint}`,
         {
           method: "POST",
         }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../lib/api";
 import "./SystemStatus.css";
 
 interface SystemStatusData {
@@ -23,7 +24,7 @@ const SystemStatus: React.FC = () => {
 
   const fetchStatus = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/system/status");
+      const res = await fetch(`${API_BASE_URL}/api/system/status`);
       if (!res.ok) throw new Error("Failed to fetch status");
       const data = await res.json();
       setStatus(data);
@@ -238,7 +239,7 @@ const SystemStatus: React.FC = () => {
               <div className="info-table">
                 <div className="info-row">
                   <span className="info-key">API Endpoint</span>
-                  <span className="info-value">http://localhost:8000</span>
+                  <span className="info-value">{API_BASE_URL}</span>
                 </div>
                 <div className="info-row">
                   <span className="info-key">Frontend</span>
