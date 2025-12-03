@@ -1,14 +1,6 @@
 import React from "react";
 import "./IncidentTimeline.css";
-
-interface Incident {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  status: string;
-  ai_summary: string | null;
-  resolution_note: string | null;
-}
+import type { Incident } from "../types";
 
 interface IncidentTimelineProps {
   incident: Incident;
