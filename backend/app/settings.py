@@ -18,7 +18,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    database_url: str = Field(..., env="DATABASE_URL")
+    database_url: str = Field(default="sqlite:///./rtiis.db", env="DATABASE_URL")
     openai_api_key: str | None = Field(default=None, env="OPENAI_API_KEY")
     llm_provider: str = Field(default="openai", env="LLM_PROVIDER")
 
