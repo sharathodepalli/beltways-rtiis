@@ -11,29 +11,26 @@ from .schemas import HealthResponse
 
 
 class ProxyHeadersMiddleware(BaseHTTPMiddleware):
-    """Middleware to handle proxy headers and preserve HTTPS scheme."""
+    """Middleware to handle proxy headers and preserve HTTPS scheme for redirects."""
     
     async def dispatch(self, request: Request, call_next):
         # Trust X-Forwarded-Proto header from Railway's edge proxy
-        if request.headers.get("x-forwarded-proto") == "https":
-            request.scope["scheme"] = "https"
+        x_forwarded_proto = request.headers.get("x-forwarded-proto")
+        if x_forwarded_proto:
+            request.scope["scheme"] = x_forwarded_proto
         response = await call_next(request)
         return response
 
 
-app = FastAPI(
-    title="Beltways RTIIS",
-    # Disable redirect slashes to prevent 307 redirects
-    redirect_slashes=False,
-)
+app = FastAPI(title="Beltways RTIIS")
 
-# Add proxy headers middleware first
+# Add proxy headers middleware FIRST (before CORS)
 app.add_middleware(ProxyHeadersMiddleware)
 
-# CORS configuration - allow frontend origins
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for demo
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
