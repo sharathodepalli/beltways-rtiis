@@ -10,9 +10,18 @@ from .schemas import HealthResponse
 
 app = FastAPI(title="Beltways RTIIS")
 
+# CORS configuration - allow frontend origins
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://charming-exploration-production.up.railway.app",
+    "https://*.railway.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all origins for demo
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
