@@ -1,23 +1,36 @@
 """FastAPI entrypoint for Beltways RTIIS."""
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from .database import init_db
 from .routers import incidents, readings, segments, sensors, system
 from .schemas import HealthResponse
 
-app = FastAPI(title="Beltways RTIIS")
+
+class ProxyHeadersMiddleware(BaseHTTPMiddleware):
+    """Middleware to handle proxy headers and preserve HTTPS scheme."""
+    
+    async def dispatch(self, request: Request, call_next):
+        # Trust X-Forwarded-Proto header from Railway's edge proxy
+        if request.headers.get("x-forwarded-proto") == "https":
+            request.scope["scheme"] = "https"
+        response = await call_next(request)
+        return response
+
+
+app = FastAPI(
+    title="Beltways RTIIS",
+    # Disable redirect slashes to prevent 307 redirects
+    redirect_slashes=False,
+)
+
+# Add proxy headers middleware first
+app.add_middleware(ProxyHeadersMiddleware)
 
 # CORS configuration - allow frontend origins
-origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://charming-exploration-production.up.railway.app",
-    "https://*.railway.app",
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins for demo
